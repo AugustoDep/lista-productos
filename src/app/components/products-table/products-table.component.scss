@@ -1,0 +1,265 @@
+.example-container {
+  height: 400px;
+  overflow: auto;
+}
+
+table {
+  width: 100%;
+  min-width: auto;
+  transition: all 0.5s ease;
+  table-layout: fixed;
+}
+
+.mat-mdc-form-field {
+  font-size: 14px;
+  width: 100%;
+}
+
+.column-id {
+  width: 60px;
+  min-width: 60px;
+}
+
+.column-name {
+  min-width: auto;
+  word-wrap: break-word;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.column-price {
+  width: 90px;
+  min-width: 90px;
+}
+
+.column-expand {
+  width: 90px;
+  min-width: 90px;
+}
+
+.column-actions {
+  width: 160px;
+  min-width: 160px;
+}
+
+.table-wrapper {
+  max-height: calc(100vh - 200px);
+  overflow: auto;
+  position: relative;
+  overflow-x: hidden;
+  margin-top: 0;
+  transition: all 0.5s ease;
+  width: 100%;
+}
+
+:host-context(.body-trimmed) .column-name {
+  min-width: 150px;
+}
+
+:host-context(.body-md-screen) .column-name,
+:host-context(.body.collapsed) .column-name {
+  min-width: 300px;
+}
+
+@media (max-width: 1200px) {
+  .table-wrapper {
+    max-height: calc(100vh - 150px);
+  }
+  
+  .column-name {
+    min-width: 120px;
+  }
+  
+  :host-context(.body-trimmed) .column-name {
+    min-width: 100px;
+  }
+}
+
+@media (max-width: 768px) {
+  .table-wrapper {
+    max-height: calc(100vh - 120px);
+  }
+  
+  .column-name {
+    min-width: 80px;
+  }
+  
+  :host-context(.body-trimmed) .column-name,
+  :host-context(.body-md-screen) .column-name,
+  :host-context(.body.collapsed) .column-name {
+    min-width: 80px;
+  }
+}
+
+th[sticky] {
+  position: sticky;
+  top: 0;
+  z-index: 99;
+  background: white;
+}
+
+tr.example-detail-row {
+  height: 0;
+}
+
+tr.example-element-row:not(.example-expanded-row):hover {
+  background: whitesmoke;
+}
+
+tr.example-element-row:not(.example-expanded-row):active {
+  background: #efefef;
+}
+
+.example-element-row td {
+  border-bottom-width: 0;
+}
+
+.example-element-detail {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  background: white;
+  border-radius: 8px;
+  margin: 8px 0;
+  box-shadow: 0 2px 8px rgba(1, 42, 91, 0.1);
+  border: 1px solid #e2e8f0;
+}
+
+.card-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid #f1f5f9;
+  background: #f8fafc;
+}
+
+.card-header h4 {
+  margin: 0;
+  color: #012a5b;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.card-content {
+  padding: 20px;
+}
+
+.info-section {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 200px;
+}
+
+.info-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #64748b;
+  min-width: 80px;
+}
+
+.info-value {
+  margin: 0;
+  color: #1e293b;
+  font-size: 0.9rem;
+}
+
+.category-tag {
+  background: #f1f5f9;
+  color: #012a5b;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.rating-display {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.star-rating {
+  display: flex;
+  align-items: center;
+  gap: 1px;
+}
+
+.star {
+  font-size: 1.2rem;
+  color: #e2e8f0;
+}
+
+.star.filled {
+  color: #f59e0b;
+}
+
+.rating-value {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #012a5b;
+}
+
+.actions-cell {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 8px 16px !important;
+}
+
+.actions-cell button {
+  min-width: auto;
+  white-space: nowrap;
+}
+
+.actions-cell button[color="primary"] {
+  padding: 0 16px;
+  height: 36px;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+.actions-cell button[color="warn"] {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.expand-cell {
+  text-align: center;
+  padding: 8px 16px !important;
+}
+
+.expand-cell button {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mat-mdc-cell {
+  padding: 8px 16px;
+}
+
+.mat-mdc-header-cell {
+  padding: 16px;
+}
+
+.mat-mdc-header-cell:has(+ .expand-cell) {
+  text-align: center;
+}
+
+.mat-mdc-header-cell:has(+ .actions-cell) {
+  text-align: left;
+}

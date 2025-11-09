@@ -1,0 +1,100 @@
+<!-- <mat-form-field class="">
+    <mat-label>Filter</mat-label>
+    <input matInput (keyup)="applyFilter($event)" placeholder="Buscar producto" #input>
+</mat-form-field> -->
+
+<div class="table-wrapper mat-elevation-z8" [class.sidebar-collapsed]="isSidebarCollapsed()">
+    
+    <table mat-table [dataSource]="dataSource" multiTemplateDataRows>
+
+        <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef class="column-id">No. </th>
+            <td mat-cell *matCellDef="let element" class="column-id"> {{element.id}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef class="column-name">Nombre </th>
+            <td mat-cell *matCellDef="let element" class="column-name"> {{element.title}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="price">
+            <th mat-header-cell *matHeaderCellDef class="column-price">Precio </th>
+            <td mat-cell *matCellDef="let element" class="column-price"> {{element.price}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="expand">
+            <th mat-header-cell *matHeaderCellDef class="column-name">Ver más</th>
+            <td mat-cell *matCellDef="let element" class="expand-cell column-expand">
+                <button mat-icon-button
+                        aria-label="expand row"
+                        (click)="toggleExpand(element); $event.stopPropagation()">
+                    <mat-icon>
+                        {{isExpanded(element) ? 'expand_less' : 'expand_more'}}
+                    </mat-icon>
+                </button>
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef class="column-actions"> Actions </th>
+            <td mat-cell *matCellDef="let element" class="actions-cell column-actions">
+                <button mat-raised-button color="primary" (click)="editItem(element)">Edit</button>
+                <button mat-icon-button color="warn" (click)="deleteItem(element)">
+                    <mat-icon>delete</mat-icon> 
+                </button>
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="expandedDetail">
+            <td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplayWithExpand.length">
+                <div class="example-element-detail"
+                    [@detailExpand]="isExpanded(element) ? 'expanded' : 'collapsed'">
+                    <div class="card-header">
+                        <h4>Detalles del Producto</h4>
+                    </div>
+                    <div class="card-content">
+                        <div class="info-section">
+                            <div class="info-item">
+                                <span class="info-label">Descripción</span>
+                                <p class="info-value">{{element.description}}</p>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Categoría</span>
+                                <span class="info-value category-tag">{{element.category}}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Rating</span>
+                                <div class="rating-display">
+                                    <div class="star-rating">
+                                        <span class="star" [class.filled]="element.rating >= 1">★</span>
+                                        <span class="star" [class.filled]="element.rating >= 2">★</span>
+                                        <span class="star" [class.filled]="element.rating >= 3">★</span>
+                                        <span class="star" [class.filled]="element.rating >= 4">★</span>
+                                        <span class="star" [class.filled]="element.rating >= 5">★</span>
+                                    </div>
+                                    <span class="rating-value">{{element.rating}}/5</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="columnsToDisplayWithExpand; sticky: true"></tr>
+        <tr mat-row 
+            *matRowDef="let element; columns: columnsToDisplayWithExpand;"
+            class="example-element-row"
+            [class.example-expanded-row]="isExpanded(element)">
+        </tr>
+        <tr mat-row 
+            *matRowDef="let row; columns: ['expandedDetail']; when: isExpandedRow" 
+            class="example-detail-row">
+        </tr>
+
+        <!-- <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell" [attr.colspan]="columnsToDisplayWithExpand.length">No data matching the filter "{{input.value}}"</td>
+        </tr> -->
+    </table>
+    <mat-paginator [pageSize]="50" [pageSizeOptions]="[50, 100, 200]" aria-label="Seleccione página de"></mat-paginator>
+</div>
