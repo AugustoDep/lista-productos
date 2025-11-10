@@ -38,3 +38,8 @@ body {
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+ 
+::ng-deep .mat-mdc-dialog-title {
+  margin-bottom: 0 !important;
+  padding: 16px 24px 8px 24px !important;
+}
