@@ -1,4 +1,7 @@
 <div class="app-container">
-    <app-left-sidebar/>
-    <app-main/>
+    <app-left-sidebar
+        [collapsed]="collapsed"
+        (collapsedChange)="setSidebarCollapsed($event)"/>
+    <app-main
+        [collapsed]="collapsed"/>
 </div>
