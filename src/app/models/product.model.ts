@@ -14,4 +14,5 @@ export interface Product{
     reviews: review[],
     returnPolicy: string,
     minimumOrderQuantity: string, 
+    images: string[]; 
 }
