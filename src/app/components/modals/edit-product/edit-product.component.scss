@@ -1,0 +1,18 @@
+.product-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 320px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+mat-dialog-content {
+  padding-top: 8px;
+}
+
+mat-dialog-actions {
+  padding: 16px;
+}

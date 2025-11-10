@@ -1,25 +1,30 @@
-import { AfterViewInit, Component, inject, OnInit, ViewChild } from '@angular/core';
-import { ProductStoreService } from '../../services/product-store.service';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { MatInputModule } from '@angular/material/input';
-import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { Product } from '../../models/product.model';
-import { MatIconModule} from '@angular/material/icon';
+import { MatIconModule } from '@angular/material/icon';
 import { MatDialog } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { trigger, state, style, transition, animate } from '@angular/animations';
-import { DeleteConfirmComponent } from '../delete-confirm.component/delete-confirm.component';
-import { EditProductComponent } from '../edit-product.component/edit-product.component';
-import { LayoutService } from '../../services/layout.service';
+import { DeleteConfirmComponent } from '../modals/delete-confirm/delete-confirm.component';
+import { EditProductComponent } from '../modals/edit-product/edit-product.component';
+import { AddProductComponent } from '../modals/add-product/add-product.component';
+import { ProductPayload, ProductService } from '../../services/product.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { finalize, filter, switchMap, tap } from 'rxjs';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-products-table',
+  standalone: true,
   imports: [
-    MatTableModule, 
-    MatInputModule, 
-    MatPaginatorModule, 
+    CommonModule,
+    MatTableModule,
+    MatPaginatorModule,
     MatIconModule,
-    MatButtonModule
+    MatButtonModule,
+    MatSnackBarModule,
   ],
   templateUrl: './products-table.component.html',
   styleUrl: './products-table.component.scss',
@@ -31,108 +36,173 @@ import { LayoutService } from '../../services/layout.service';
     ]),
   ],
 })
-export class ProductsTableComponent implements OnInit, AfterViewInit{
-  
-  private store = inject(ProductStoreService);
-  private dialog = inject(MatDialog);
-  private layout = inject(LayoutService);
+export class ProductsTableComponent implements OnInit {
 
-  isSidebarCollapsed = this.layout.isLeftSidebarCollapsed;
+  private readonly productService = inject(ProductService);
+  private readonly dialog = inject(MatDialog);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly snackBar = inject(MatSnackBar);
 
-  productsList : any  = this.store.productsList;
+  readonly columnsToDisplay = ['id', 'name', 'price', 'expand', 'actions'];
+  readonly columnsToDisplayWithExpand = [...this.columnsToDisplay];
 
-  columnsToDisplay = [ 'id' , 'name' , 'price', 'expand', 'actions']; 
-  columnsToDisplayWithExpand = [...this.columnsToDisplay];
+  readonly products = signal<Product[]>([]);
+  readonly isLoading = signal(true);
+  readonly loadError = signal(false);
 
-  dataSource = new MatTableDataSource<Product>([]);
+  readonly pageIndex = signal(0);
+  readonly pageSize = signal(50);
+  readonly totalProducts = signal(0);
+  readonly expandedProductId = signal<number | null>(null);
+  expandedProductImg : string = ""; 
 
-  expandedElement: Product | null = null;
+  readonly dataSource = computed(() => this.products());
 
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
-  
-  ngOnInit() : void {
-    this.dataSource.data = [...this.productsList()]; 
-  }
+  createProduct(): void {
+    const dialogRef = this.dialog.open<AddProductComponent, undefined, ProductPayload>(AddProductComponent, {
+      width: '500px'
+    });
 
-  ngAfterViewInit() {
-    this.dataSource.paginator = this.paginator;
-  }
-
-  editItem(product: Product): void {      
-    const dialogRef = this.dialog.open(EditProductComponent, {
-        width: '500px',
-        data: { product: product }
+    dialogRef.afterClosed()
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        filter((payload): payload is ProductPayload => !!payload),
+        tap(() => {
+          this.isLoading.set(true);
+          this.loadError.set(false);
+        }),
+        switchMap(payload => this.productService.addProduct(payload))
+      )
+      .subscribe({
+        next: (newProduct) => {
+          // this.fetchProducts();
+          this.products.update(current => [...current, newProduct]);
+          this.totalProducts.update(total => total + 1);
+          this.isLoading.set(false);
+          this.snackBar.open('Producto creado con éxito', 'Cerrar', { duration: 3000 });
+        },
+        error: err => {
+          console.error('Error agregando producto', err);
+          this.loadError.set(true);
+          this.isLoading.set(false);
+        }
       });
+  }
 
-      dialogRef.afterClosed().subscribe(result => {
-        if (result) {
-          // Update the product with new values
-          const updatedProduct = { ...product, ...result };
-          
-          // Update in dataSource
-          const index = this.dataSource.data.findIndex(p => p.id === product.id);
-          if (index !== -1) {
-            const newData = [...this.dataSource.data];
-            newData[index] = updatedProduct;
-            this.dataSource.data = newData;
-          }
+  editItem(product: Product): void {
+    const dialogRef = this.dialog.open<EditProductComponent, { product: Product }, ProductPayload>(EditProductComponent, {
+      width: '500px',
+      data: { product }
+    });
 
-          // Also update in your store if needed
-          // this.store.updateProduct(updatedProduct);
-          
-          console.log('Product updated:', updatedProduct);
+    dialogRef.afterClosed()
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        filter((payload): payload is ProductPayload => !!payload),
+        tap(() => {
+          this.isLoading.set(true);
+          this.loadError.set(false);
+        }),
+        switchMap(payload => this.productService.updateProduct(product.id, payload))
+      )
+      .subscribe({
+        next: (updatedProduct) => {
+          // this.fetchProducts();  since the server does not actually actualice, we make the changes locally. 
+          console.log(updatedProduct); 
+          this.products.update(current => 
+            current.map(p => p.id === product.id ? updatedProduct : p)
+          );
+          this.isLoading.set(false);
+          this.snackBar.open('Producto actualizado con éxito', 'Cerrar', { duration: 3000 });
+        },
+        error: err => {
+          console.error('Error actualizando producto', err);
+          this.loadError.set(true);
+          this.isLoading.set(false);
         }
       });
   }
 
   deleteItem(product: Product): void {
-    const dialogRef = this.dialog.open(DeleteConfirmComponent, {
+    const dialogRef = this.dialog.open<DeleteConfirmComponent, { productName: string }, boolean>(DeleteConfirmComponent, {
       width: '400px',
       data: { productName: product.title }
     });
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        // Remove from dataSource
-        this.dataSource.data = this.dataSource.data.filter(p => p.id !== product.id);
-        
-        // Also remove from your store if needed
-        // this.store.deleteProduct(product.id);
-        
-        console.log('Product deleted:', product);
-        
-        // If the deleted product was expanded, clear the expanded element
-        if (this.expandedElement?.id === product.id) {
-          this.expandedElement = null;
+    dialogRef.afterClosed()
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        filter(result => !!result),
+        tap(() => {
+          this.isLoading.set(true);
+          this.loadError.set(false);
+        }),
+        switchMap(() => this.productService.deleteProduct(product.id))
+      )
+      .subscribe({
+        next: () => {
+          const total = this.totalProducts();
+          this.totalProducts.set(total > 0 ? total - 1 : 0);
+          this.products.update(current => current.filter(p => p.id !== product.id));
+          this.isLoading.set(false); 
+          // this.fetchProducts();
+          this.snackBar.open('Producto eliminado con éxito', 'Cerrar', { duration: 3000 });
+        },
+        error: err => {
+          console.error('Error eliminando producto', err);
+          this.loadError.set(true);
+          this.isLoading.set(false);
         }
-      }
-    });
+      });
   }
 
-  //arreglar
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
-
-    if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
-    }
+  ngOnInit(): void {
+    this.fetchProducts();
   }
 
-  toggleExpand(element: any): void {
-    this.expandedElement = this.expandedElement === element ? null : element;
-    this.dataSource.data = [...this.dataSource.data];
+  onPageChange(event: PageEvent) {
+    this.pageIndex.set(event.pageIndex);
+    this.pageSize.set(event.pageSize);
+    this.fetchProducts();
   }
 
-  isExpandedRow = (index: number, row: Product) => {
-    const result = this.isExpanded(row);
-    return result;
-  };
-
-  isExpanded(element: any): boolean {
-    return this.expandedElement === element;
+  toggleExpand(element: Product): void {
+    this.expandedProductId.update(current =>
+      current === element.id ? null : element.id
+    );
+    this.expandedProductImg = element.images[0]; 
+    this.products.update(items => [...items]);
   }
-  //renderRows()  cuando haga alguna operacion crud
+
+  isExpanded(element: Product): boolean {
+    return this.expandedProductId() === element.id;
+  }
+
+  isExpandedRow = (_: number, row: Product) => this.isExpanded(row);
+
+  private fetchProducts() {
+    const limit = this.pageSize();
+    const skip = this.pageIndex() * limit;
+
+    this.isLoading.set(true);
+    this.loadError.set(false);
+
+    this.productService.getAll({ limit, skip })
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => this.isLoading.set(false))
+      )
+      .subscribe({
+        next: response => {
+          this.totalProducts.set(response?.total ?? 0);
+          this.products.set([...(response?.products ?? [])]);
+        },
+        error: err => {
+          console.error('Error cargando productos', err);
+          this.loadError.set(true);
+        }
+      });
+  }
 }
 
 

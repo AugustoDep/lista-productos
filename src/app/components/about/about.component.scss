@@ -1,0 +1,295 @@
+.about-wrapper{
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(1, 42, 91, 0.08);
+  max-height: 95vh;
+  overflow-y: hidden;
+}
+
+.personal-card {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  max-width: 100%;
+  max-height: 95vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-content {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 0;
+  max-width: 100%;
+  flex: 1;
+  overflow: hidden;
+}
+
+.photo-section {
+  background: #f8f9fa;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+.main-photo-container {
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  width: 100%;
+}
+
+.main-photo {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  display: block;
+}
+
+.contact-info-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.contact-item-sidebar {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 8px;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+}
+
+.contact-item-sidebar:hover {
+  background-color: rgba(52, 152, 219, 0.05);
+}
+
+.contact-item-sidebar .contact-icon {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.contact-details-sidebar {
+  display: flex;
+  flex-direction: column;
+}
+
+.contact-label-sidebar {
+  font-size: 0.8em;
+  color: #666;
+  margin-bottom: 2px;
+}
+
+.contact-value-sidebar {
+  font-size: 0.9em;
+  color: #2c3e50;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.info-section {
+  padding: 25px;
+  max-width: 100%;
+  overflow-y: hidden;
+  max-height: calc(95vh - 50px);
+}
+
+.info-header {
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.person-name {
+  font-size: 2.2em;
+  font-weight: 700;
+  color: #2c3e50;
+  margin: 0 0 6px 0;
+  line-height: 1.1;
+}
+
+.person-title {
+  font-size: 1.2em;
+  color: #3498db;
+  margin: 0 0 10px 0;
+  font-weight: 500;
+}
+
+.person-location {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #666;
+  font-size: 1em;
+}
+
+.personal-details {
+  margin-bottom: 20px;
+}
+
+.personal-details h3 {
+  color: #2c3e50;
+  margin-bottom: 10px;
+  font-size: 1.3em;
+}
+
+.bio {
+  line-height: 1.5;
+  color: #555;
+  margin-bottom: 15px;
+  font-size: 0.95em;
+}
+
+.details-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.detail-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid #f0f0f0;
+  align-items: flex-start;
+}
+
+.detail-item strong {
+  color: #666;
+  font-weight: 600;
+  min-width: 120px;
+  flex-shrink: 0;
+}
+
+.detail-item span {
+  color: #2c3e50;
+  font-weight: 500;
+  text-align: right;
+  flex: 1;
+  line-height: 1.4;
+}
+
+.skills-section {
+  margin-bottom: 0px;
+}
+
+.skills-section h3 {
+  color: #2c3e50;
+  margin-bottom: 10px;
+  font-size: 1.3em;
+}
+
+.skills-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.skill-tag {
+  background: #e3f2fd;
+  color: #1976d2;
+  padding: 5px 10px;
+  border-radius: 12px;
+  font-size: 0.9em;
+  font-weight: 500;
+}
+
+@media (max-width: 900px) {
+  .card-content {
+    grid-template-columns: 250px 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .about-wrapper {
+    max-height: none;
+  }
+  
+  .personal-card {
+    max-height: none;
+  }
+  
+  .card-content {
+    grid-template-columns: 1fr;
+    max-height: none;
+  }
+  
+  .photo-section {
+    padding: 15px;
+    flex-direction: row;
+    align-items: center;
+    gap: 20px;
+    max-height: none;
+  }
+  
+  .main-photo-container {
+    width: 150px;
+    flex-shrink: 0;
+  }
+  
+  .main-photo {
+    height: 150px;
+  }
+  
+  .contact-info-sidebar {
+    flex: 1;
+  }
+  
+  .info-section {
+    padding: 20px;
+    max-height: none;
+    overflow-y: visible;
+  }
+  
+  .person-name {
+    font-size: 1.8em;
+  }
+}
+
+@media (max-width: 480px) {
+  .about-wrapper {
+    padding: 0;
+  }
+  
+  .photo-section {
+    padding: 12px;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .main-photo-container {
+    width: 100%;
+    max-width: 200px;
+  }
+  
+  .main-photo {
+    height: 180px;
+  }
+  
+  .info-section {
+    padding: 15px;
+  }
+  
+  .person-name {
+    font-size: 1.6em;
+  }
+  
+  .detail-item {
+    flex-direction: column;
+    gap: 4px;
+    align-items: flex-start;
+  }
+  
+  .detail-item span {
+    text-align: left;
+  }
+}

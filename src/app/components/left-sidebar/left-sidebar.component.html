@@ -1,11 +1,11 @@
 <div 
     class="sidenav" 
-    [ngClass]="isCollapsed ? 'sidenav-collapsed' : '' ">
+    [ngClass]="collapsed ? 'sidenav-collapsed' : '' ">
     <div class="logo-container">
         <button class="logo" (click)="toggleCollapse()">
             <i class="fal fa-bars"></i>
         </button>
-        @if (!isCollapsed) {
+        @if (!collapsed) {
         <div class="logo-text">App</div>
     }
     </div>
@@ -18,7 +18,7 @@
                 routerLinkActive="active" 
                 [routerLinkActiveOptions] = "{exact: true}">
                 <i class="sidenav-link-icon" [class] = "item.icon"></i>
-                @if (!isCollapsed){
+                @if (!collapsed){
                     <span class="sidenav-link-text"> {{item.label}}</span>
                 }
                 </a>

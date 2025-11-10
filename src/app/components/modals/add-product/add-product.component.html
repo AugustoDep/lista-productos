@@ -1,0 +1,56 @@
+<h2 mat-dialog-title>Nuevo Producto</h2>
+<mat-dialog-content>
+  <form [formGroup]="productForm" class="product-form">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Título</mat-label>
+      <input matInput formControlName="title" required>
+      @if (productForm.get('title')?.hasError('required')) {
+        <mat-error>El título es obligatorio</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Precio</mat-label>
+      <input matInput type="number" formControlName="price" required min="0">
+      @if (productForm.get('price')?.hasError('required')) {
+        <mat-error>El precio es obligatorio</mat-error>
+      }
+      @if (productForm.get('price')?.hasError('min')) {
+        <mat-error>El precio debe ser mayor o igual a 0</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Descripción</mat-label>
+      <textarea matInput formControlName="description" required></textarea>
+      @if (productForm.get('description')?.hasError('required')) {
+        <mat-error>La descripción es obligatoria</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Categoría</mat-label>
+      <input matInput formControlName="category" required>
+      @if (productForm.get('category')?.hasError('required')) {
+        <mat-error>La categoría es obligatoria</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Rating</mat-label>
+      <input matInput type="number" formControlName="rating" required min="0" max="5" step="0.1">
+      @if (productForm.get('rating')?.hasError('required')) {
+        <mat-error>El rating es obligatorio</mat-error>
+      }
+      @if (productForm.get('rating')?.hasError('min') || productForm.get('rating')?.hasError('max')) {
+        <mat-error>El rating debe estar entre 0 y 5</mat-error>
+      }
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Cancelar</button>
+  <button mat-raised-button color="primary" (click)="onSave()" [disabled]="!productForm.valid">
+    Guardar
+  </button>
+</mat-dialog-actions>

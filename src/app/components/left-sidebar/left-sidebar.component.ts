@@ -1,7 +1,6 @@
-import { Component, inject, Input, input, Output, output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { LayoutService } from '../../services/layout.service';
 
 
 @Component({
@@ -13,18 +12,15 @@ import { LayoutService } from '../../services/layout.service';
 })
 export class LeftSidebarComponent {
 
-  private layout = inject(LayoutService);
-
-get isCollapsed() {
-  return this.layout.isLeftSidebarCollapsed();
-}
+  @Input() collapsed = false;
+  @Output() collapsedChange = new EventEmitter<boolean>();
 
 toggleCollapse(): void {
-  this.layout.setSidebarCollapsed(!this.isCollapsed);
+  this.collapsedChange.emit(!this.collapsed);
 }
 
 closeSidenav(): void {
-  this.layout.setSidebarCollapsed(true);
+  this.collapsedChange.emit(true);
 }
 
 
