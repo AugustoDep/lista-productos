@@ -64,9 +64,9 @@
               </div>
               <div class="card-content">
                 <div class="info-section">
-                  @if(expandedProductImg.length > 0){
+                  @if(expandedProductImg().length > 0){
                   <div class="info-item product-image">
-                    <img src="{{ expandedProductImg }}" 
+                    <img src="{{expandedProductImg()}}" 
                       alt="Product Image" class="product-image">
                   </div>
                   }

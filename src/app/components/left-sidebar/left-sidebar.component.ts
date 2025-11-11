@@ -19,12 +19,7 @@ toggleCollapse(): void {
   this.collapsedChange.emit(!this.collapsed);
 }
 
-closeSidenav(): void {
-  this.collapsedChange.emit(true);
-}
-
-
-  items = [
+items = [
   {
     routelink: ['/productos'],
     icon: 'fal fa-box-open',

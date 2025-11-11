@@ -54,7 +54,7 @@ export class ProductsTableComponent implements OnInit {
   readonly pageSize = signal(50);
   readonly totalProducts = signal(0);
   readonly expandedProductId = signal<number | null>(null);
-  expandedProductImg : string = ""; 
+  readonly expandedProductImg = signal<string>(""); 
 
   readonly dataSource = computed(() => this.products());
 
@@ -170,7 +170,7 @@ export class ProductsTableComponent implements OnInit {
     this.expandedProductId.update(current =>
       current === element.id ? null : element.id
     );
-    this.expandedProductImg = element.images[0]; 
+    this.expandedProductImg.set(element.images[0]);
     this.products.update(items => [...items]);
   }
 
