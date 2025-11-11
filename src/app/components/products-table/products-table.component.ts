@@ -44,7 +44,6 @@ export class ProductsTableComponent implements OnInit {
   private readonly snackBar = inject(MatSnackBar);
 
   readonly columnsToDisplay = ['id', 'name', 'price', 'expand', 'actions'];
-  readonly columnsToDisplayWithExpand = [...this.columnsToDisplay];
 
   readonly products = signal<Product[]>([]);
   readonly isLoading = signal(true);
